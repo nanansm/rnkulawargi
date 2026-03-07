@@ -36,7 +36,7 @@ export default function Login() {
             inputMode="numeric"
             autoFocus
             required
-            className="w-full rounded-lg border border-slate-300 px-4 py-3 text-center text-lg tracking-widest focus:border-slate-500 focus:outline-none focus:ring-1 focus:ring-slate-500"
+            className="w-full rounded-lg border border-slate-500 px-4 py-3 text-center text-lg tracking-widest text-slate-900 placeholder:text-slate-500 focus:border-slate-700 focus:outline-none focus:ring-1 focus:ring-slate-700"
           />
           {actionData?.error && (
             <p className="text-center text-sm text-red-600">
