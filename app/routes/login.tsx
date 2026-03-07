@@ -29,8 +29,12 @@ export default function Login() {
           DuitLog
         </h1>
         <Form method="post" className="flex flex-col gap-4">
+          <label htmlFor="passcode" className="sr-only">
+            Passcode
+          </label>
           <input
             type="password"
+            id="passcode"
             name="passcode"
             placeholder="Enter passcode"
             inputMode="numeric"
