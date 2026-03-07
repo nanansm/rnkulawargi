@@ -1,14 +1,25 @@
-import { data, useLoaderData, useRouteError, isRouteErrorResponse } from 'react-router';
+import { useState } from 'react';
+import { data, useLoaderData, useNavigate, useRouteError, isRouteErrorResponse } from 'react-router';
 import type { Route } from './+types/history';
-import { getRecentExpenses } from '~/lib/sheets.server';
+import { getExpensesByMonth } from '~/lib/sheets.server';
 import { requireAuth } from '~/lib/auth.server';
+import { resolveActiveMonth } from '~/lib/month.server';
+import { selectedMonthCookie } from '~/lib/cookies.server';
 import type { ExpenseEntry } from '~/lib/types';
 import { ExpenseCard } from '~/components/expense-card';
+import { MonthSelector } from '~/components/month-selector';
 
 export async function loader({ request }: Route.LoaderArgs) {
   await requireAuth(request);
+
+  const url = new URL(request.url);
+  const monthParam = url.searchParams.get('month');
+  const cookieMonth = await selectedMonthCookie.parse(request.headers.get('Cookie'));
+
+  const { months, activeMonth } = await resolveActiveMonth(monthParam ?? cookieMonth);
+
   try {
-    const rows = await getRecentExpenses(20);
+    const rows = await getExpensesByMonth(activeMonth);
     const entries: ExpenseEntry[] = rows.map((row) => ({
       timestamp: row[0] ?? '',
       item: row[1] ?? '',
@@ -18,9 +29,9 @@ export async function loader({ request }: Route.LoaderArgs) {
       date: row[5] ?? '',
       note: row[6] ?? '',
     }));
-    return data({ entries });
+    return data({ entries, activeMonth, months });
   } catch {
-    return data({ entries: [] as ExpenseEntry[], error: 'Failed to load expenses' });
+    return data({ entries: [] as ExpenseEntry[], activeMonth, months, error: 'Failed to load expenses' });
   }
 }
 
@@ -28,6 +39,13 @@ export default function History() {
   const loaderData = useLoaderData<typeof loader>();
   const error = 'error' in loaderData ? (loaderData.error as string) : null;
   const entries = loaderData.entries as ExpenseEntry[];
+  const activeMonth = loaderData.activeMonth as string;
+  const months = loaderData.months as string[];
+  const navigate = useNavigate();
+
+  function handleMonthChange(month: string) {
+    navigate(`/history?month=${month}`);
+  }
 
   return (
     <main className="mx-auto flex min-h-screen max-w-md flex-col bg-white">
@@ -35,6 +53,13 @@ export default function History() {
         <h1 className="text-xl font-bold tracking-tight text-slate-900">
           Recent Expenses
         </h1>
+        <div className="mt-2">
+          <MonthSelector
+            months={months}
+            activeMonth={activeMonth}
+            onChange={handleMonthChange}
+          />
+        </div>
       </header>
 
       {error && (

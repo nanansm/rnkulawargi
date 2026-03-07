@@ -15,6 +15,7 @@ interface ExpenseFormProps {
   errors?: Record<string, string>;
   isSubmitting?: boolean;
   amountRef?: RefObject<HTMLInputElement | null>;
+  selectedMonth?: string;
 }
 
 function toDateString(d: Date) {
@@ -55,6 +56,7 @@ export function ExpenseForm({
   errors,
   isSubmitting,
   amountRef,
+  selectedMonth,
 }: ExpenseFormProps) {
   const [state, dispatch] = useReducer(reducer, {
     date: new Date(),
@@ -67,6 +69,9 @@ export function ExpenseForm({
       method="post"
       className="flex flex-col gap-4 p-4"
     >
+        {selectedMonth && (
+          <input type="hidden" name="month" value={selectedMonth} />
+        )}
         {/* Amount */}
         <fieldset>
           <div className="flex items-center gap-2 rounded-xl border-2 border-slate-200 px-4 py-3 focus-within:border-slate-900">
