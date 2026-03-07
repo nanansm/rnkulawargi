@@ -16,9 +16,17 @@ export async function resolveActiveMonth(
     return { months, activeMonth: cookieMonth };
   }
 
-  // Priority 2: current calendar month
-  const now = new Date();
-  const currentMonth = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+  // Priority 2: current calendar month (in Asia/Jakarta timezone)
+  const jakartaFormatter = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Jakarta',
+    year: 'numeric',
+    month: '2-digit',
+  });
+  const jakartaParts = jakartaFormatter.formatToParts(new Date());
+  const jakartaYear = jakartaParts.find((p) => p.type === 'year')?.value;
+  const jakartaMonth = jakartaParts.find((p) => p.type === 'month')?.value;
+  const currentMonth =
+    jakartaYear && jakartaMonth ? `${jakartaYear}-${jakartaMonth}` : months[0];
   if (months.includes(currentMonth)) {
     return { months, activeMonth: currentMonth };
   }
