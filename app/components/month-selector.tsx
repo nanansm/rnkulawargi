@@ -32,6 +32,7 @@ export function MonthSelector({
             viewBox="0 0 24 24"
             stroke="currentColor"
             strokeWidth={2}
+            aria-hidden="true"
           >
             <path
               strokeLinecap="round"
@@ -43,6 +44,7 @@ export function MonthSelector({
             value={activeMonth}
             onChange={(e) => onChange(e.target.value)}
             className="absolute inset-0 cursor-pointer opacity-0"
+            aria-label="Select month"
           >
             {months.map((m) => (
               <option key={m} value={m}>

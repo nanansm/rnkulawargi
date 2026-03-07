@@ -61,7 +61,6 @@ export async function loader({ request }: Route.LoaderArgs) {
   return data({
     months,
     activeMonth,
-    defaultUser: cookieUser ?? 'Danny',
   });
 }
 

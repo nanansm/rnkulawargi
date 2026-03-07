@@ -38,7 +38,9 @@ export async function getAvailableMonths(): Promise<string[]> {
     titles.sort();
     titles.reverse();
 
-    log('info', 'sheets_get_months_success', { count: titles.length });
+    log('info', 'sheets_get_months_success', {
+      count: titles.length,
+    });
     return titles;
   } catch (err) {
     const error = err as Error;
@@ -47,7 +49,10 @@ export async function getAvailableMonths(): Promise<string[]> {
   }
 }
 
-export async function appendExpense(month: string, row: string[]): Promise<void> {
+export async function appendExpense(
+  month: string,
+  row: string[],
+): Promise<void> {
   try {
     const sheets = getSheetsClient();
     await sheets.spreadsheets.values.append({
@@ -64,7 +69,10 @@ export async function appendExpense(month: string, row: string[]): Promise<void>
   }
 }
 
-export async function getExpensesByMonth(month: string): Promise<string[][]> {
+export async function getExpensesByMonth(
+  month: string,
+  limit?: number,
+): Promise<string[][]> {
   try {
     const sheets = getSheetsClient();
     const res = await sheets.spreadsheets.values.get({
@@ -72,8 +80,9 @@ export async function getExpensesByMonth(month: string): Promise<string[][]> {
       range: `'${month}'!A:G`,
     });
     const values = res.data.values ?? [];
-    // Skip header row, reverse (newest first)
-    return values.slice(1).reverse() as string[][];
+    const rows = values.slice(1);
+    const bounded = limit ? rows.slice(-limit) : rows;
+    return bounded.reverse() as string[][];
   } catch (err) {
     const error = err as Error;
     log('error', 'sheets_get_error', { error: error.message });

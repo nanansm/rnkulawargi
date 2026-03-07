@@ -28,7 +28,8 @@ export async function loader({ request }: Route.LoaderArgs) {
   );
 
   try {
-    const rows = await getExpensesByMonth(activeMonth);
+    const LIMIT = 20;
+    const rows = await getExpensesByMonth(activeMonth, LIMIT);
     const entries: ExpenseEntry[] = rows.map((row) => ({
       timestamp: row[0] ?? '',
       item: row[1] ?? '',
