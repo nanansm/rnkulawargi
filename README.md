@@ -2,7 +2,6 @@
 
 > A zero-friction expense tracker PWA backed by Google Sheets.
 
-![Build Status](https://img.shields.io/github/actions/workflow/status/dannycahyo/duit-log/ci.yml?branch=master)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.9-blue.svg)
 ![React Router](https://img.shields.io/badge/React_Router-v7-orange.svg)
@@ -27,9 +26,7 @@ flowchart LR
 - Sub-10-second expense logging from phone home screen
 - Mobile-first UI with numeric keyboard, smart defaults, one-hand operation
 - Google Sheets as canonical datastore (no secondary database)
-- Two-user support (quick user toggle)
 - Category and payment method selection via tap-friendly pill buttons
-- Recent expenses view with user filtering
 - Installable PWA (Android + iOS)
 - Simple passcode authentication
 - Offline fallback page
