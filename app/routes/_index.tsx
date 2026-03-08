@@ -284,10 +284,27 @@ export default function Index() {
     }
   }, [actionData]);
 
+  function generateOfflineId(): string {
+    // Prefer native crypto.randomUUID when available, fall back to timestamp+random
+    if (
+      typeof crypto !== 'undefined' &&
+      typeof crypto.randomUUID === 'function'
+    ) {
+      return crypto.randomUUID();
+    }
+
+    return (
+      'offline-' +
+      Date.now().toString(36) +
+      '-' +
+      Math.random().toString(36).slice(2)
+    );
+  }
+
   // Handle offline form submission
   async function handleOfflineSubmit(formData: FormData) {
     const expense = {
-      id: crypto.randomUUID(),
+      id: generateOfflineId(),
       createdAt: new Date().toISOString(),
       formData: {
         month: formData.get('month') as string,
