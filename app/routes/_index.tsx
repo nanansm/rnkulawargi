@@ -18,7 +18,7 @@ import { MonthSelector } from '~/components/month-selector';
 import { log } from '~/lib/logger.server';
 import { toast } from 'sonner';
 import { requireAuth } from '~/lib/auth.server';
-import { resolveActiveMonth } from '~/lib/month.server';
+import { resolveActiveMonth, isNetworkError } from '~/lib/month.server';
 import {
   selectedMonthCookie,
   selectedSourceCookie,
@@ -52,7 +52,20 @@ type ActionData =
       };
     }
   | { success: false; errors: Record<string, string> }
-  | { success: false; error: string };
+  | { success: false; error: string }
+  | {
+      success: false;
+      networkError: true;
+      pendingData: {
+        month: string;
+        item: string;
+        date: string;
+        amount: number;
+        category: string;
+        method: string;
+        source: string;
+      };
+    };
 
 export async function loader({ request }: Route.LoaderArgs) {
   await requireAuth(request);
@@ -98,16 +111,21 @@ export async function action({ request }: Route.ActionArgs) {
 
   const parsed = result.data;
 
-  // Verify the target month tab exists
-  const availableMonths = await getAvailableMonths();
-  if (!availableMonths.includes(parsed.month)) {
-    return data({
-      success: false as const,
-      error:
-        "Sheet tab '" +
-        parsed.month +
-        "' not found. Please create it in the spreadsheet.",
-    });
+  // Verify the target month tab exists (skip when offline — appendExpense will fail gracefully)
+  try {
+    const availableMonths = await getAvailableMonths();
+    if (!availableMonths.includes(parsed.month)) {
+      return data({
+        success: false as const,
+        error:
+          "Sheet tab '" +
+          parsed.month +
+          "' not found. Please create it in the spreadsheet.",
+      });
+    }
+  } catch (err) {
+    if (!isNetworkError(err)) throw err;
+    // Offline — skip verification and let appendExpense attempt (and fail) below
   }
 
   const now = new Date();
@@ -156,6 +174,21 @@ export async function action({ request }: Route.ActionArgs) {
       { headers },
     );
   } catch (err) {
+    if (isNetworkError(err)) {
+      return data({
+        success: false as const,
+        networkError: true as const,
+        pendingData: {
+          month: parsed.month,
+          item: parsed.item,
+          date: parsed.date,
+          amount: parsed.amount,
+          category: parsed.category,
+          method: parsed.method,
+          source: parsed.source,
+        },
+      });
+    }
     log('error', 'action_append_error', {
       error: (err as Error).message,
     });
@@ -261,7 +294,7 @@ export default function Index() {
       navigator.serviceWorker.removeEventListener('message', handler);
   }, [refreshPendingCount]);
 
-  // Handle online success toast
+  // Handle action response
   useEffect(() => {
     if (!actionData) return;
 
@@ -278,6 +311,13 @@ export default function Index() {
       }
       setFormKey((k) => k + 1);
       setTimeout(() => amountRef.current?.focus(), 100);
+    } else if ('networkError' in actionData && actionData.networkError) {
+      // Server couldn't reach Sheets — fall back to offline queue
+      const fd = new FormData();
+      Object.entries(actionData.pendingData).forEach(([k, v]) =>
+        fd.set(k, String(v)),
+      );
+      handleOfflineSubmit(fd);
     } else if ('error' in actionData && actionData.error) {
       toast.error(actionData.error);
     }

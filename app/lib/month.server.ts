@@ -1,6 +1,6 @@
 import { getAvailableMonths } from './sheets.server';
 
-function isNetworkError(err: unknown): boolean {
+export function isNetworkError(err: unknown): boolean {
   if (err instanceof Error) {
     const code = (err as NodeJS.ErrnoException).code;
     if (
