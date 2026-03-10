@@ -77,10 +77,10 @@ Same as current implementation — entries queue in IndexedDB, sync when back on
 
 | Feature                                                           | Priority |
 | ----------------------------------------------------------------- | -------- |
-| Clerk auth with Google OAuth (including Sheets API scope)         | P0       |
-| Database for user profiles and config (Vercel Postgres + Drizzle) | P0       |
+| Google OAuth-based authentication (including Sheets API scope)    | P0       |
+| Relational database for user profiles and configuration           | P0       |
 | Onboarding wizard (spreadsheet + sources + categories + methods)  | P0       |
-| Per-user Sheets API calls using OAuth token from Clerk            | P0       |
+| Per-user Sheets API calls using OAuth token from the auth system  | P0       |
 | Auto-create spreadsheet in user's Drive (onboarding option)       | P0       |
 | Customizable sources, categories, payment methods per user        | P0       |
 | Settings page (edit config, view spreadsheet, sign out)           | P1       |
