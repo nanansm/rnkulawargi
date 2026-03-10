@@ -2,7 +2,7 @@
 
 | Version | Date       | Author | Change Description |
 | ------- | ---------- | ------ | ------------------ |
-| 2       | 2025-03-09 | Danny  | SaaS Plan          |
+| 2       | 2026-03-10 | Danny  | SaaS Plan          |
 
 ## Problem Statement
 
@@ -75,17 +75,17 @@ Same as current implementation — entries queue in IndexedDB, sync when back on
 
 ### SaaS MVP
 
-| Feature                                                           | Priority |
-| ----------------------------------------------------------------- | -------- |
-| Google OAuth-based authentication (including Sheets API scope)    | P0       |
-| Relational database for user profiles and configuration           | P0       |
-| Onboarding wizard (spreadsheet + sources + categories + methods)  | P0       |
-| Per-user Sheets API calls using OAuth token from the auth system  | P0       |
-| Auto-create spreadsheet in user's Drive (onboarding option)       | P0       |
-| Customizable sources, categories, payment methods per user        | P0       |
-| Settings page (edit config, view spreadsheet, sign out)           | P1       |
-| Landing page (marketing, sign-in CTA)                             | P1       |
-| Migrate existing personal data (Danny's setup)                    | P1       |
+| Feature                                                          | Priority |
+| ---------------------------------------------------------------- | -------- |
+| Google OAuth-based authentication (including Sheets API scope)   | P0       |
+| Relational database for user profiles and configuration          | P0       |
+| Onboarding wizard (spreadsheet + sources + categories + methods) | P0       |
+| Per-user Sheets API calls using OAuth token from the auth system | P0       |
+| Auto-create spreadsheet in user's Drive (onboarding option)      | P0       |
+| Customizable sources, categories, payment methods per user       | P0       |
+| Settings page (edit config, view spreadsheet, sign out)          | P1       |
+| Landing page (marketing, sign-in CTA)                            | P1       |
+| Migrate existing personal data (Danny's setup)                   | P1       |
 
 ### Future
 
