@@ -7,12 +7,18 @@ export const CATEGORIES = [
   'Entertainment',
   'Shopping',
   'Education',
-  'Other'
+  'Other',
+  'Savings',
+  'Investment',
+  'Loan',
+  'Debt',
+  'Insurance',
+  'Fee',
 ] as const;
 
-export const METHODS = ['Cash', 'BCA Debit', 'QRIS'] as const;
+export const METHODS = ['Cash', 'BCA Debit'] as const;
 
-export const SOURCES = ['Danny', 'Dewi', 'Together'] as const;
+export const SOURCES = ['Suami', 'Istri', 'Together'] as const;
 
 export type Category = (typeof CATEGORIES)[number];
 export type Method = (typeof METHODS)[number];
